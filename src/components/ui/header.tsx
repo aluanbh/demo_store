@@ -10,6 +10,8 @@ import { Separator } from "./separator";
 
 export const Header = () => {
     const { status, data } = useSession();
+
+    console.log('status:', status, 'data:', data);
     const handleLoginClick = async () => {
         await signIn();
     }

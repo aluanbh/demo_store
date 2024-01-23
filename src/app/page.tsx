@@ -5,7 +5,7 @@ import Image from "next/image";
 
 export default function Home() {
   const { data } = useSession();
-  console.log(data);
+
   return (
     <div>{data?.user?.name}</div>
   );
