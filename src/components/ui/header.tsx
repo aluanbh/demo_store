@@ -11,7 +11,6 @@ import { Separator } from "./separator";
 export const Header = () => {
     const { status, data } = useSession();
 
-    console.log('status:', status, 'data:', data);
     const handleLoginClick = async () => {
         await signIn();
     }
@@ -19,7 +18,6 @@ export const Header = () => {
         await signOut();
     }
 
-    //função para cortar o nome do usuário se for muito grande e adicionar reticências no final, maximo 30 caracteres
     function limitName(name: string | null | undefined) {
         if (!name) return;
         if (name.length > 30) {
@@ -105,7 +103,7 @@ export const Header = () => {
                     </SheetContent>
                 </Sheet>
 
-                <h2 className="text-lg font-semibold">Demo Store</h2>
+                <h2 className="text-lg font-semibold"><span className="text-primary">Demo </span>Store</h2>
 
                 <Button size="icon" variant="outline">
                     <ShoppingCart size={20} />
