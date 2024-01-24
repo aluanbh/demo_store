@@ -3,9 +3,10 @@ import GoogleProvider from "next-auth/providers/google";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { AuthOptions } from "next-auth";
 import { prismaClient } from "./prisma";
-import { compare } from "bcrypt"; // Importe o bcrypt para hashing de senha
+import { compare } from "bcrypt";
 
 export const authOptions: AuthOptions = {
+
     adapter: PrismaAdapter(prismaClient) as any,
     providers: [
         GoogleProvider({
@@ -20,8 +21,6 @@ export const authOptions: AuthOptions = {
             },
             async authorize(credentials, req) {
                 const { email, password } = credentials as { email: string, password: string };
-
-
                 const response = await prismaClient.user.findUnique({
                     where: { email },
                 });
@@ -30,35 +29,30 @@ export const authOptions: AuthOptions = {
 
 
                 if (passwordCorrect) {
-                    return { id: user?.id as string, email: user?.email };
+                    return user;
                 }
 
                 return null;
             },
+
         }),
     ],
+    session: {
+        strategy: 'jwt',
+    },
     callbacks: {
+
         async session({ session, token, user }) {
-            console.log("session de session", session);
-            console.log("token de session", token);
-            console.log("user de session", user);
-            session.user = { ...session.user, id: user.id } as {
-                id: string;
-                name: string;
-                email: string;
-            };
             return session;
         },
-        async jwt({ token, user, account, profile, isNewUser }) {
-            console.log("token", token);
-            console.log("user", user);
-            console.log("account", account);
-            console.log("profile", profile);
-            console.log("isNewUser", isNewUser);
-            if (user?.id) {
-                token.id = user.id;
-            }
-            return token;
-        },
+
+
     },
+    pages: {
+        // signIn: '/auth/signin',
+        // signOut: '/auth/signout',
+        error: '/error', // Error code passed in query string as ?error=
+        // verifyRequest: '/auth/verify-request', // (used for check email message)
+        newUser: '/auth/new-user' // New users will be directed here on first sign in (leave the property out if not of interest)
+    }
 };
